@@ -15,6 +15,8 @@ import com.example.blogapp.presentation.auth.AuthViewModel
 import com.example.blogapp.presentation.auth.AuthViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.example.blogapp.core.Result
+import com.example.blogapp.core.hide
+import com.example.blogapp.core.show
 
 
 class LoginFragment : Fragment(R.layout.fragment_login) {
@@ -34,13 +36,18 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         binding = FragmentLoginBinding.bind(view)
 
         isUserLoggedIn()
-        goToRegister()
         doLogin()
+        goToRegister()
     }
 
     private fun isUserLoggedIn() {
-        fireBaseAuth.currentUser?.let {
-            findNavController().navigate(R.id.action_loginFragment_to_homeScreenFragment)
+        fireBaseAuth.currentUser?.let { user ->
+            if (user.displayName.isNullOrEmpty()) {
+                findNavController().navigate(R.id.action_loginFragment_to_setupProfileFragment)
+            } else {
+                findNavController().navigate(R.id.action_loginFragment_to_homeScreenFragment)
+            }
+
         }
     }
 
@@ -69,18 +76,29 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         viewmodel.singIn(email, password).observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Result.Loading -> {
-                    binding.progressBar.visibility = View.VISIBLE
+                    binding.progressBar.show()
                     binding.btnSignIn.isEnabled = false
                 }
 
                 is Result.Success -> {
-                    binding.progressBar.visibility = View.GONE
-                    findNavController().navigate(R.id.action_loginFragment_to_homeScreenFragment)
+                    binding.progressBar.hide()
+                    Toast.makeText(
+                        requireContext(),
+                        "Welcome ${result.data?.email}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    if (result.data?.displayName.isNullOrEmpty()) {
+                        Toast.makeText(requireContext(),"You must finish setting your account.",Toast.LENGTH_SHORT).show()
+                        findNavController().navigate(R.id.action_loginFragment_to_setupProfileFragment)
+                    } else {
+                        findNavController().navigate(R.id.action_loginFragment_to_homeScreenFragment)
+                    }
 
                 }
 
                 is Result.Failure -> {
-                    binding.progressBar.visibility = View.GONE
+                    binding.progressBar.hide()
                     binding.btnSignIn.isEnabled = true
                     Toast.makeText(
                         requireContext(),
@@ -92,7 +110,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         })
     }
 
-    private fun goToRegister(){
+    private fun goToRegister() {
         binding.tvSignUp.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
         }

@@ -9,6 +9,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.blogapp.R
 import com.example.blogapp.core.Result
+import com.example.blogapp.core.hide
+import com.example.blogapp.core.show
 import com.example.blogapp.data.remote.auth.AuthDataSource
 import com.example.blogapp.databinding.FragmentRegisterBinding
 import com.example.blogapp.domain.auth.AuthRepoImpl
@@ -59,15 +61,15 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         viewmodel.signUp(username, email, password).observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Result.Loading -> {
-                    binding.progressBar.visibility = View.VISIBLE
+                    binding.progressBar.show()
                     binding.btnRegister.isEnabled = false
                 }
                 is Result.Success -> {
-                    binding.progressBar.visibility = View.GONE
+                    binding.progressBar.hide()
                     findNavController().navigate(R.id.action_registerFragment_to_setupProfileFragment)
                 }
                 is Result.Failure -> {
-                    binding.progressBar.visibility = View.GONE
+                    binding.progressBar.hide()
                     binding.btnRegister.isEnabled = true
                     Toast.makeText(
                         requireContext(),

@@ -14,6 +14,8 @@ import com.example.blogapp.presentation.HomeScreenViewModel
 import com.example.blogapp.presentation.HomeScreenViewModelFactory
 import com.example.blogapp.ui.home.adapter.HomeScreenAdapter
 import com.example.blogapp.core.Result
+import com.example.blogapp.core.hide
+import com.example.blogapp.core.show
 
 
 class HomeScreenFragment : Fragment(R.layout.fragment_home_screen) {
@@ -34,14 +36,22 @@ class HomeScreenFragment : Fragment(R.layout.fragment_home_screen) {
         viewmodel.fetchLatestPosts().observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Result.Loading -> {
-                    binding.rlProgressBar.visibility = View.VISIBLE
+                    binding.rlProgressBar.show()
 
                 }
                 is Result.Success -> {
 
-                    binding.rlProgressBar.visibility = View.GONE
+                    binding.rlProgressBar.hide()
 
+                    if(result.data.isEmpty()){
+                        binding.rlEmptyContainer.show()
+                        return@Observer
+                    } else {
+                        binding.rlEmptyContainer.hide()
+                    }
                     binding.rvHome.adapter = HomeScreenAdapter(result.data)
+
+
                 }
                 is Result.Failure -> {
 
