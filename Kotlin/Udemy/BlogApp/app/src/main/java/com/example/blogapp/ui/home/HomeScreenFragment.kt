@@ -16,9 +16,11 @@ import com.example.blogapp.ui.home.adapter.HomeScreenAdapter
 import com.example.blogapp.core.Result
 import com.example.blogapp.core.hide
 import com.example.blogapp.core.show
+import com.example.blogapp.data.model.Post
+import com.example.blogapp.ui.home.adapter.onPostClickListener
 
 
-class HomeScreenFragment : Fragment(R.layout.fragment_home_screen) {
+class HomeScreenFragment : Fragment(R.layout.fragment_home_screen), onPostClickListener {
 
     private lateinit var binding: FragmentHomeScreenBinding
     private val viewmodel by viewModels<HomeScreenViewModel> {
@@ -49,12 +51,12 @@ class HomeScreenFragment : Fragment(R.layout.fragment_home_screen) {
                     } else {
                         binding.rlEmptyContainer.hide()
                     }
-                    binding.rvHome.adapter = HomeScreenAdapter(result.data)
+                    binding.rvHome.adapter = HomeScreenAdapter(result.data,this)
 
 
                 }
                 is Result.Failure -> {
-
+                    binding.rlProgressBar.hide()
                     Toast.makeText(
                         requireContext(),
                         "Ocurrio un error: ${result.exception}",
@@ -64,5 +66,26 @@ class HomeScreenFragment : Fragment(R.layout.fragment_home_screen) {
             }
         })
     }
+
+    override fun onLikeButtonClick(post: Post, liked: Boolean) {
+        viewmodel.registerLikeButtonState(post.id,liked).observe(viewLifecycleOwner, Observer { result ->
+            when(result){
+                is Result.Loading -> {
+
+                }
+                is Result.Success -> {
+
+                }
+                is Result.Failure -> {
+                    Toast.makeText(
+                        requireContext(),
+                        "Ocurrio un error: ${result.exception}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        })
+    }
+
 
 }

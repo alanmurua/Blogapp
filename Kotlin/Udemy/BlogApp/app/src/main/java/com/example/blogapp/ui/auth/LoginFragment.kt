@@ -84,7 +84,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                     binding.progressBar.hide()
                     Toast.makeText(
                         requireContext(),
-                        "Welcome ${result.data?.email}",
+                        "Welcome ${result.data?.displayName}",
                         Toast.LENGTH_SHORT
                     ).show()
 
