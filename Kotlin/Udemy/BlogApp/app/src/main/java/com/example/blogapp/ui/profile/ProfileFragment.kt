@@ -38,7 +38,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                     binding.rlProgressBar.show()
                 }
                 is Result.Success -> {
-                    
+
                     binding.rlProgressBar.hide()
                     result.data?.let {
                         Glide.with(this).load(result.data.photoUrl).into(binding.ciProfilePicture)
@@ -59,3 +59,4 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         })
     }
 }
+//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
