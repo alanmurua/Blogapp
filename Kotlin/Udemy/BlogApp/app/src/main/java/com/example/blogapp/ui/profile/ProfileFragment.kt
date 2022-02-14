@@ -18,6 +18,7 @@ import com.example.blogapp.databinding.FragmentProfileBinding
 import com.example.blogapp.domain.profile.ProfileRepoImpl
 import com.example.blogapp.presentation.profile.ProfileViewModel
 import com.example.blogapp.presentation.profile.ProfileViewModelFactory
+import com.example.blogapp.ui.profile.adapter.ProfileAdapter
 
 
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
@@ -57,6 +58,32 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 }
             }
         })
+
+
+        viewmodel.getUserPosts().observe(viewLifecycleOwner, Observer { result ->
+            when(result){
+                is Result.Loading -> {
+                    binding.rlProgressBar.show()
+
+                }
+                is Result.Success -> {
+                    if(result.data.isEmpty()){
+                        binding.rlEmptyContainer.show()
+                        return@Observer
+                    } else {
+                        binding.rlEmptyContainer.hide()
+                    }
+                    binding.rvHome.adapter = ProfileAdapter(result.data)
+                }
+                is Result.Failure -> {
+                    binding.rlProgressBar.hide()
+                    Toast.makeText(
+                        requireContext(),
+                        "Ocurrio un error: ${result.exception}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        })
     }
 }
-//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

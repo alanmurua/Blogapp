@@ -5,9 +5,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.example.blogapp.core.Result
-import com.example.blogapp.domain.home.HomeScreenRepo
+import com.example.blogapp.data.model.Post
 import com.example.blogapp.domain.profile.ProfileRepo
-import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.Dispatchers
 
 class ProfileViewModel(private val repo: ProfileRepo) : ViewModel() {
@@ -21,6 +20,14 @@ class ProfileViewModel(private val repo: ProfileRepo) : ViewModel() {
         }
     }
 
+    fun getUserPosts()  = liveData(viewModelScope.coroutineContext + Dispatchers.Main){
+        emit(Result.Loading())
+        try {
+            emit(Result.Success(repo.getUserPosts()))
+        }catch (e:Exception){
+            emit(Result.Failure(e))
+        }
+    }
 
 }
 
