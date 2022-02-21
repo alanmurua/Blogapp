@@ -64,11 +64,6 @@
             app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
-        android:id="@+id/profileFragment"
-        android:name="com.example.blogapp.ui.profile.ProfileFragment"
-        android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" />
-    <fragment
         android:id="@+id/setupProfileFragment"
         android:name="com.example.blogapp.ui.auth.SetupProfileFragment"
         android:label="fragment_setup_profile"

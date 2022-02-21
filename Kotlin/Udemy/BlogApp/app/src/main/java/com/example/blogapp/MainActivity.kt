@@ -41,9 +41,6 @@ class MainActivity : AppCompatActivity() {
                     binding.btnNavigation.hide()
                 }
 
-                R.id.setupProfileFragment -> {
-                    binding.btnNavigation.hide()
-                }
 
                 else -> {
                     binding.btnNavigation.show()
